@@ -1,0 +1,63 @@
+// Requirement: 
+// CPU: 16-cores (32-cores preferred)
+// RAM: 16GB of memory (32GB preferred)
+// Storage: 128GB of disk space
+// Network: 10 Mbps of upload and download bandwidth
+// Official install link from Aleo: https://github.com/AleoHQ/snarkOS/
+
+sudo apt update && sudo apt upgrade -y
+sudo apt install screen
+screen -S aleo
+apt-get install curl build-essential make gcc -y
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs/ | sh
+source "$HOME/.cargo/env"
+sudo apt -y install clang
+sudo apt -y install gcc
+sudo apt -y install cmake
+sudo apt install make clang pkg-config libssl-dev
+sudo apt install git
+git clone https://github.com/AleoHQ/snarkOS.git --depth 1
+cd snarkOS
+sudo apt install ufw
+sudo ufw allow 4133/tcp
+sudo ufw allow 3033/tcp
+./build_ubuntu.sh
+sudo adduser aleo2
+sudo chown -R aleo2:aleo2 ./*
+sudo apt install cargo
+cargo install --path .
+snarkos account new
+./run-prover.sh
+Enter the Aleo Prover account private key:
+APrivateKey1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+// deattact screen by command: 
+Ctrl+a d
+
+// Attact screen
+screen -r
+
+
+2. Useful commands
+Check your Aleo account.
+!!! SAVE THESE KEYS IN A SAFE PLACE !!!
+
+cat $HOME/aleo/account_new.txt
+Check what Aleo Private Key is used by your prover.
+
+grep "prover" /etc/systemd/system/aleo-prover.service | awk '{print $5}'
+Check aleo prover logs:
+
+journalctl -u aleo-prover -f -o cat
+Check the aleo client logs if it is running:
+
+journalctl -u aleo-client -f -o cat
+Stop the aleo pruver and start the aleo client:
+
+systemctl stop aleo-prover
+systemctl restart aleo-client
+
+2.5 Running the prover(Already running after installation).
+
+systemctl stop aleo-client
+systemctl restart aleo-prover
